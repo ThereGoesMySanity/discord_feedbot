@@ -42,6 +42,7 @@ MAIN = config['MAIN']
 
 # set global debug verbosity level.
 debug = MAIN.getint('debug',0)
+random_text = MAIN.getint('random_text',0)
 
 # If debug is on, turn on the asyncio debug
 if debug:
@@ -120,6 +121,14 @@ conn.execute('''CREATE TABLE IF NOT EXISTS feed_items
 conn.execute('''DELETE FROM feed_items
                where
                (julianday() - julianday(published)) > 366''')
+
+pxx = []
+nxx = []
+if MAIN.get("random_text", "0") is 1:
+    for i in ['adjectives', 'nouns', 'adverbs']:
+        with open(i+'.txt', 'r') as f:
+            pxx.extend(x for x in f if x.startswith('p'))
+else:
 
 
 # global discord client object
@@ -277,6 +286,9 @@ def process_field(field,item,FEED,channel):
 
 def build_message(FEED,item,channel):
     message=''
+
+    message += 'new '
+
     fieldlist = FEED.get(
                          channel['name']+'.fields',
                          FEED.get('fields','id,description')
