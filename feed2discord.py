@@ -11,6 +11,7 @@ import html2text
 import logging
 import os
 import pytz
+import random
 import re
 import sqlite3
 import sys
@@ -126,9 +127,16 @@ pxx = []
 nxx = []
 if MAIN.get("random_text", "0") is 1:
     for i in ['adjectives', 'nouns', 'adverbs']:
+        with open('2syllable'+i+'.txt', 'r') as f:
+            pxx.extend(x for x in f if x.startswith('p'))
+    with open('3syllablenouns.txt', 'r') as f:
+        nxx.extend(x for x in f if x.startswith('n'))
+else:
+    for i in ['adjectives', 'nouns', 'adverbs']:
         with open(i+'.txt', 'r') as f:
             pxx.extend(x for x in f if x.startswith('p'))
-else:
+            if i is 'nouns':
+                nxx.extend(x for x in f if x.startswith('n'))
 
 
 # global discord client object
