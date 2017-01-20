@@ -126,17 +126,18 @@ conn.execute('''DELETE FROM feed_items
 pxx = []
 nxx = []
 if MAIN.get("random_text", "0") is 1:
-    for i in ['adjectives', 'nouns', 'adverbs']:
+    for i in ['adjectives', 'nouns']:
         with open('2syllable'+i+'.txt', 'r') as f:
-            pxx.extend(x for x in f if x.startswith('p'))
+            pxx.extend(x[:-1] for x in f if x.startswith('p') and 
+                not (i is 'nouns' and x[-2] is 's'))
     with open('3syllablenouns.txt', 'r') as f:
-        nxx.extend(x for x in f if x.startswith('n'))
+        nxx.extend(x[:-1] for x in f if x.startswith('n'))
 else:
-    for i in ['adjectives', 'nouns', 'adverbs']:
+    for i in ['adjectives', 'nouns']:
         with open(i+'.txt', 'r') as f:
-            pxx.extend(x for x in f if x.startswith('p'))
+            pxx.extend(x[:-1] for x in f if x.startswith('p'))
             if i is 'nouns':
-                nxx.extend(x for x in f if x.startswith('n'))
+                nxx.extend(x[:-1] for x in f if x.startswith('n'))
 
 
 # global discord client object
@@ -296,6 +297,8 @@ def build_message(FEED,item,channel):
     message=''
 
     message += 'new '
+    message += random.choice(pxx) + ' '
+    message += random.choice(nxx) + ' '
 
     fieldlist = FEED.get(
                          channel['name']+'.fields',
